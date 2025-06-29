@@ -26,7 +26,6 @@ def convert_model(
     rknn_model_path,
     target_platform="rk3588",
     input_size=None,
-    layout=None,
     input_name=None,
 ):
     """
@@ -44,7 +43,7 @@ def convert_model(
         mean_values=[[127.5, 127.5, 127.5]],
         std_values=[[127.5, 127.5, 127.5]],
         target_platform=target_platform,
-        data_format=layout,
+        dynamic_input=[[input_size]] if input_size else None,
     )
     print("done")
 
@@ -52,8 +51,6 @@ def convert_model(
     print("--> Loading model")
     ret = rknn.load_onnx(
         model=onnx_model_path,
-        inputs=[input_name] if input_name else None,
-        input_size_list=[input_size] if input_size else None,
     )
     if ret != 0:
         print("Load model failed!")
@@ -96,14 +93,12 @@ if __name__ == "__main__":
     models_to_convert = {
         "scrfd_2.5g.onnx": {
             "rknn_name": "scrfd_2.5g.rknn",
-            "input_size": [1, 480, 640, 3],  # NHWC
-            "layout": "NHWC",
+            "input_size": [1, 3, 480, 640],  # NCHW
             "input_name": "input.1",
         },
         "w600k_r50.onnx": {
             "rknn_name": "w600k_r50.rknn",
-            "input_size": [1, 112, 112, 3],  # NHWC
-            "layout": "NHWC",
+            "input_size": [1, 3, 112, 112],  # NCHW
             "input_name": "input.1",
         },
     }
@@ -120,7 +115,6 @@ if __name__ == "__main__":
             onnx_path,
             rknn_path,
             input_size=params["input_size"],
-            layout=params["layout"],
             input_name=params["input_name"],
         )
 

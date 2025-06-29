@@ -90,6 +90,7 @@ class SCRFDDetector:
             # Post-processing logic still relies on the original blob, so we create it.
             blob = self._preprocess(img_bgr)
             # RKNN inference needs a 4D input (N, H, W, C).
+            rknn_input = np.expand_dims(rknn_input, axis=0)
             outs = self.rknn.inference(inputs=[rknn_input])
         else:
             blob = self._preprocess(img_bgr)
