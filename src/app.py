@@ -29,12 +29,13 @@ from . import config
 # Local imports (absolute for packaged usage)
 from .engine import FaceEngine
 from .face_db import FaceDatabase
+from .utils import find_available_camera
 
 
 class MainWindow(QMainWindow):
     def __init__(
         self,
-        cam_index: int = config.APP_CAM_INDEX,
+        cam_index: int,
         enrol_frames: int = config.APP_ENROL_FRAMES,
         parent=None,
     ):
@@ -203,7 +204,8 @@ class EnrolDialog(QDialog):
 
 def main() -> None:  # pragma: no cover
     app = QApplication(sys.argv)
-    win = MainWindow()
+    cam_index = find_available_camera()
+    win = MainWindow(cam_index=cam_index)
     win.showFullScreen()
     sys.exit(app.exec())
 

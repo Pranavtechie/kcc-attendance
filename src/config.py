@@ -25,7 +25,6 @@ EMBEDDINGS_PATH = str(DATA_DIR / "embeddings.npy")
 DB_SEARCH_THRESHOLD = 0.35
 
 # --- GUI Application (PySide6) ---------------------------------------------
-APP_CAM_INDEX = 0
 APP_ENROL_FRAMES = 20
 APP_FRAME_WIDTH = 640
 APP_FRAME_HEIGHT = 480
