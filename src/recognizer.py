@@ -53,6 +53,9 @@ class ArcFaceRecognizer:
         if self.use_rknn:
             # RKNN model expects uint8 NHWC input.
             face = cv2.cvtColor(aligned, cv2.COLOR_BGR2RGB)
+            face = face.astype(np.float32) / 255.0
+            face = (face - 0.5) / 0.5
+            face = np.transpose(face, (2, 0, 1))[None]
             # RKNN inference needs a 4D input (N, H, W, C).
             emb = self.rknn.inference(inputs=[face])[0][0]
         else:
