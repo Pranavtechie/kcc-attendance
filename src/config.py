@@ -42,3 +42,6 @@ APP_ENROL_FRAMES = 20
 APP_FRAME_WIDTH = 640
 APP_FRAME_HEIGHT = 480
 APP_TIMER_INTERVAL_MS = 33  # For ~30 FPS
+
+APP_HIBERNATE_INTERVAL_MS = 5000  # Check for wake-up every 1 second
+APP_BLACK_FRAME_THRESHOLD = 5.0   # Avg pixel value below which frame is considered black

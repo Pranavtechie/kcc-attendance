@@ -78,6 +78,7 @@ class MainWindow(QMainWindow):
         self.enrol_frames_target = enrol_frames
         self._enrolling = False
         self._pending_feats: List[np.ndarray] = []
+        self._hibernating = False
 
     # ------------------------------------------------------------------
     # Slots
@@ -101,6 +102,33 @@ class MainWindow(QMainWindow):
     def _process_frame(self):
         ret, frame = self.cap.read()
         if not ret:
+            if not self._hibernating:
+                self.timer.setInterval(config.APP_HIBERNATE_INTERVAL_MS)
+                self._hibernating = True
+                self.info_label.setText("No camera signal. Hibernating...")
+                self.video_label.clear() # Clear the video label
+            return
+
+        frame_brightness = np.mean(frame)
+
+        # Condition to START hibernating
+        if not self._hibernating and frame_brightness < config.APP_BLACK_FRAME_THRESHOLD:
+            self._hibernating = True
+            self.timer.setInterval(config.APP_HIBERNATE_INTERVAL_MS)
+            self.info_label.setText("Camera blocked. Hibernating...")
+            self.video_label.clear() # Clear the video label
+            return # Stop processing this frame
+
+        # Condition to WAKE UP from hibernation
+        if self._hibernating and frame_brightness >= config.APP_BLACK_FRAME_THRESHOLD:
+            self._hibernating = False
+            self.timer.setInterval(config.APP_TIMER_INTERVAL_MS)
+            self.info_label.setText("Camera active.")
+            # We return here and let the next, normally-timed frame do the work
+            return
+            
+        # If already hibernating, do nothing else
+        if self._hibernating:
             return
 
         faces_feats = self.engine.detect_and_extract(frame, top_k=1)
