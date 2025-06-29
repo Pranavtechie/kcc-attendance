@@ -14,22 +14,27 @@ def inspect_rknn_model(model_path):
             print(f"  Error loading RKNN model: {model_path}, ret={ret}")
             return
 
+        # Init runtime
+        print("  Initializing RKNN runtime...")
+        ret = rknn.init_runtime()
+        if ret != 0:
+            print(f"  Error initializing RKNN runtime, ret={ret}")
+            return
+
         # Query model info
         print("  Querying model info...")
-        info = rknn.query_model_info()
+        info = rknn.query(RKNNLite.QUERY_INPUT_OUTPUT_INFO)
         if info:
             print("  Inputs:")
-            for i, input_info in enumerate(info["inputs"]):
+            for i, input_info in enumerate(info[0]):
                 print(f"    Input {i}:")
-                print(f"      Name: {input_info['name']}")
                 print(f"      Shape: {input_info['shape']}")
                 print(f"      Dtype: {input_info['dtype']}")
                 print(f"      Quantization: {input_info['qnt_type']}")
 
             print("  Outputs:")
-            for i, output_info in enumerate(info["outputs"]):
+            for i, output_info in enumerate(info[1]):
                 print(f"    Output {i}:")
-                print(f"      Name: {output_info['name']}")
                 print(f"      Shape: {output_info['shape']}")
                 print(f"      Dtype: {output_info['dtype']}")
                 print(f"      Quantization: {output_info['qnt_type']}")
