@@ -1,11 +1,12 @@
-from rknn.api import RKNNLite
+from rknnlite.api import RKNNLite
+
 
 def inspect_rknn_model(model_path):
     rknn = None
     try:
         rknn = RKNNLite()
         print(f"Model: {model_path}")
-        
+
         # Load RKNN model
         print(f"  Loading RKNN model: {model_path}")
         ret = rknn.load_rknn(model_path)
@@ -18,15 +19,15 @@ def inspect_rknn_model(model_path):
         info = rknn.query_model_info()
         if info:
             print("  Inputs:")
-            for i, input_info in enumerate(info['inputs']):
+            for i, input_info in enumerate(info["inputs"]):
                 print(f"    Input {i}:")
                 print(f"      Name: {input_info['name']}")
                 print(f"      Shape: {input_info['shape']}")
                 print(f"      Dtype: {input_info['dtype']}")
                 print(f"      Quantization: {input_info['qnt_type']}")
-            
+
             print("  Outputs:")
-            for i, output_info in enumerate(info['outputs']):
+            for i, output_info in enumerate(info["outputs"]):
                 print(f"    Output {i}:")
                 print(f"      Name: {output_info['name']}")
                 print(f"      Shape: {output_info['shape']}")
@@ -42,6 +43,7 @@ def inspect_rknn_model(model_path):
     finally:
         if rknn:
             rknn.release()
+
 
 if __name__ == "__main__":
     models_to_inspect = [
