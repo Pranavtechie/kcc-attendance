@@ -21,7 +21,14 @@ except ImportError:
     sys.exit(1)
 
 
-def convert_model(onnx_model_path, rknn_model_path, target_platform="rk3588"):
+def convert_model(
+    onnx_model_path,
+    rknn_model_path,
+    target_platform="rk3588",
+    input_size=None,
+    layout=None,
+    input_name=None,
+):
     """
     Converts an ONNX model to a RKNN model.
     """
@@ -32,15 +39,22 @@ def convert_model(onnx_model_path, rknn_model_path, target_platform="rk3588"):
 
     # Pre-process config
     print("--> Config model")
-    # For models that take RGB images 0-255 as input
+    # For models that take RGB images 0-255 as input and expect [-1, 1] range
     rknn.config(
-        mean_values=[[0, 0, 0]], std_values=[[255, 255, 255]], target_platform=target_platform
+        mean_values=[[127.5, 127.5, 127.5]],
+        std_values=[[127.5, 127.5, 127.5]],
+        target_platform=target_platform,
+        data_format=layout,
     )
     print("done")
 
     # Load ONNX model
     print("--> Loading model")
-    ret = rknn.load_onnx(model=onnx_model_path)
+    ret = rknn.load_onnx(
+        model=onnx_model_path,
+        inputs=[input_name] if input_name else None,
+        input_size_list=[input_size] if input_size else None,
+    )
     if ret != 0:
         print("Load model failed!")
         rknn.release()
@@ -75,18 +89,39 @@ if __name__ == "__main__":
     # Assuming the script is in the 'scripts' directory and 'models' is a sibling directory.
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     models_dir = os.path.join(base_dir, "models")
+    rknn_models_dir = os.path.join(models_dir, "rknn-weights")
+    os.makedirs(rknn_models_dir, exist_ok=True)
 
     # Models to convert
-    models_to_convert = {"scrfd_2.5g.onnx": "scrfd_2.5g.rknn", "w600k_r50.onnx": "w600k_r50.rknn"}
+    models_to_convert = {
+        "scrfd_2.5g.onnx": {
+            "rknn_name": "scrfd_2.5g.rknn",
+            "input_size": [1, 480, 640, 3],  # NHWC
+            "layout": "NHWC",
+            "input_name": "input.1",
+        },
+        "w600k_r50.onnx": {
+            "rknn_name": "w600k_r50.rknn",
+            "input_size": [1, 112, 112, 3],  # NHWC
+            "layout": "NHWC",
+            "input_name": "input.1",
+        },
+    }
 
-    for onnx_name, rknn_name in models_to_convert.items():
+    for onnx_name, params in models_to_convert.items():
         onnx_path = os.path.join(models_dir, onnx_name)
-        rknn_path = os.path.join(models_dir, rknn_name)
+        rknn_path = os.path.join(rknn_models_dir, params["rknn_name"])
 
         if not os.path.exists(onnx_path):
             print(f"Model not found: {onnx_path}")
             continue
 
-        convert_model(onnx_path, rknn_path)
+        convert_model(
+            onnx_path,
+            rknn_path,
+            input_size=params["input_size"],
+            layout=params["layout"],
+            input_name=params["input_name"],
+        )
 
     print("\nAll model conversions finished.")

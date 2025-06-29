@@ -89,8 +89,8 @@ class SCRFDDetector:
             rknn_input = cv2.cvtColor(padded, cv2.COLOR_BGR2RGB)
             # Post-processing logic still relies on the original blob, so we create it.
             blob = self._preprocess(img_bgr)
-            # RKNN inference needs a batch dimension.
-            outs = self.rknn.inference(inputs=[rknn_input], data_format="nhwc")
+            # RKNN inference needs a 4D input (N, H, W, C).
+            outs = self.rknn.inference(inputs=[rknn_input])
         else:
             blob = self._preprocess(img_bgr)
             outs = self.session.run(self.output_names, {self.input_name: blob})

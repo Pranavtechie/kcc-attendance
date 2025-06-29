@@ -1,0 +1,79 @@
+W Query dynamic range failed. Ret code: RKNN_ERR_MODEL_INVALID. (If it is a static shape RKNN model, please ignore the above warning message.)
+W Query dynamic range failed. Ret code: RKNN_ERR_MODEL_INVALID. (If it is a static shape RKNN model, please ignore the above warning message.)
+E Catch exception when setting inputs.
+E Traceback (most recent call last):
+  File "/home/vicharak/kcc-attendance/.venv/lib/python3.11/site-packages/rknnlite/api/rknn_lite.py", line 209, in inference
+    self.rknn_runtime.set_inputs(inputs, data_type, data_format, inputs_pass_through=inputs_pass_through)
+  File "rknnlite/api/rknn_runtime.py", line 1082, in rknnlite.api.rknn_runtime.RKNNRuntime.set_inputs
+Exception: The input[0] need 4dims input, but 3dims input buffer feed.
+
+I RKNN: [14:05:19.883] RKNN Runtime Information, librknnrt version: 2.3.0 (c949ad889d@2024-11-07T11:35:33)
+I RKNN: [14:05:19.883] RKNN Driver Information, version: 0.9.8
+I RKNN: [14:05:19.883] RKNN Model Information, version: 6, toolkit version: 2.3.2(compiler version: 2.3.2 (e045de294f@2025-04-07T19:48:25)), target: RKNPU v2, target platform: rk3588, framework name: ONNX, framework layout: NCHW, model inference type: static_shape
+W RKNN: [14:05:19.899] query RKNN_QUERY_INPUT_DYNAMIC_RANGE error, rknn model is static shape type, please export rknn with dynamic_shapes
+I RKNN: [14:05:20.046] RKNN Runtime Information, librknnrt version: 2.3.0 (c949ad889d@2024-11-07T11:35:33)
+I RKNN: [14:05:20.046] RKNN Driver Information, version: 0.9.8
+I RKNN: [14:05:20.047] RKNN Model Information, version: 6, toolkit version: 2.3.2(compiler version: 2.3.2 (e045de294f@2025-04-07T19:48:25)), target: RKNPU v2, target platform: rk3588, framework name: ONNX, framework layout: NCHW, model inference type: static_shape
+W RKNN: [14:05:20.093] query RKNN_QUERY_INPUT_DYNAMIC_RANGE error, rknn model is static shape type, please export rknn with dynamic_shapes
+Traceback (most recent call last):
+  File "/home/vicharak/kcc-attendance/src/app.py", line 106, in _process_frame
+    faces_feats = self.engine.detect_and_extract(frame, top_k=1)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicharak/kcc-attendance/src/engine.py", line 40, in detect_and_extract
+    faces = self.face_detection(frame_bgr)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicharak/kcc-attendance/src/engine.py", line 29, in face_detection
+    return self.detector(frame_bgr)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicharak/kcc-attendance/src/detector.py", line 98, in __call__
+    scores_list = outs[0:3]
+                  ~~~~^^^^^
+TypeError: 'NoneType' object is not subscriptable
+E Catch exception when setting inputs.
+E Traceback (most recent call last):
+  File "/home/vicharak/kcc-attendance/.venv/lib/python3.11/site-packages/rknnlite/api/rknn_lite.py", line 209, in inference
+    self.rknn_runtime.set_inputs(inputs, data_type, data_format, inputs_pass_through=inputs_pass_through)
+  File "rknnlite/api/rknn_runtime.py", line 1082, in rknnlite.api.rknn_runtime.RKNNRuntime.set_inputs
+Exception: The input[0] need 4dims input, but 3dims input buffer feed.
+
+Traceback (most recent call last):
+  File "/home/vicharak/kcc-attendance/src/app.py", line 106, in _process_frame
+    faces_feats = self.engine.detect_and_extract(frame, top_k=1)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicharak/kcc-attendance/src/engine.py", line 40, in detect_and_extract
+    faces = self.face_detection(frame_bgr)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicharak/kcc-attendance/src/engine.py", line 29, in face_detection
+    return self.detector(frame_bgr)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicharak/kcc-attendance/src/detector.py", line 98, in __call__
+    scores_list = outs[0:3]
+                  ~~~~^^^^^
+TypeError: 'NoneType' object is not subscriptable
+E Catch exception when setting inputs.
+E Traceback (most recent call last):
+  File "/home/vicharak/kcc-attendance/.venv/lib/python3.11/site-packages/rknnlite/api/rknn_lite.py", line 209, in inference
+    self.rknn_runtime.set_inputs(inputs, data_type, data_format, inputs_pass_through=inputs_pass_through)
+  File "rknnlite/api/rknn_runtime.py", line 1082, in rknnlite.api.rknn_runtime.RKNNRuntime.set_inputs
+Exception: The input[0] need 4dims input, but 3dims input buffer feed.
+
+Traceback (most recent call last):
+  File "/home/vicharak/kcc-attendance/src/app.py", line 106, in _process_frame
+    faces_feats = self.engine.detect_and_extract(frame, top_k=1)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicharak/kcc-attendance/src/engine.py", line 40, in detect_and_extract
+    faces = self.face_detection(frame_bgr)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicharak/kcc-attendance/src/engine.py", line 29, in face_detection
+    return self.detector(frame_bgr)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vicharak/kcc-attendance/src/detector.py", line 98, in __call__
+    scores_list = outs[0:3]
+                  ~~~~^^^^^
+TypeError: 'NoneType' object is not subscriptable
+E Catch exception when setting inputs.
+E Traceback (most recent call last):
+  File "/home/vicharak/kcc-attendance/.venv/lib/python3.11/site-packages/rknnlite/api/rknn_lite.py", line 209, in inference
+    self.rknn_runtime.set_inputs(inputs, data_type, data_format, inputs_pass_through=inputs_pass_through)
+  File "rknnlite/api/rknn_runtime.py", line 1082, in rknnlite.api.rknn_runtime.RKNNRuntime.set_inputs
+Exception: The input[0] need 4dims input, but 3dims input buffer feed.
