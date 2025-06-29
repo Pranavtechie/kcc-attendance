@@ -3,15 +3,11 @@ name = "kcc-attendance"
 version = "0.1.0"
 description = "Autonomous attendance system for KCC on Vicharak Axon using RKNN for Inference acceleration"
 readme = "README.md"
-requires-python = "==3.10.17"
+requires-python = "~=3.11"
 dependencies = [
     "opencv-python>=4.11.0.86",
-    "click>=8.1.7",
-    "paddlepaddle>=2.6.0",
-    "setuptools>=80.9.0",
     "requests>=2.31.0",
     "onnxruntime>=1.17.0",
-    "scipy>=1.11.0",
     "faiss-cpu>=1.7.4",
     "PySide6>=6.7.0",
     "uuid-extension>=0.1.0",
@@ -22,7 +18,7 @@ dependencies = [
 # Restrict Ruff to analyzing Python files inside the `src` package only.
 src = ["src"]
 # Target the Python version used in this project.
-target-version = "py310"
+target-version = "py311"
 # You can customize line length (defaults to 88). Increase if desired.
 line-length = 100
 
