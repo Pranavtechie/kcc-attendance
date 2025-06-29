@@ -32,4 +32,6 @@ InspireFace/**
 InspireFace/*
 inspireface-python-examles/**
 
+embeddings.npy
+
 .DS_Store
