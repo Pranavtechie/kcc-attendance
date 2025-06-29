@@ -204,7 +204,7 @@ class EnrolDialog(QDialog):
 def main() -> None:  # pragma: no cover
     app = QApplication(sys.argv)
     win = MainWindow()
-    win.show()
+    win.showFullScreen()
     sys.exit(app.exec())
 
 
