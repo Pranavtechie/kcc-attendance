@@ -47,8 +47,8 @@ def inspect_rknn_model(model_path):
 
 if __name__ == "__main__":
     models_to_inspect = [
-        "models/scrfd_2.5g.rknn",
-        "models/w600k_r50.rknn",
+        "models/rknn-weights/scrfd_2.5g.rknn",
+        "models/rknn-weights/w600k_r50.rknn",
     ]
     for model_path in models_to_inspect:
         inspect_rknn_model(model_path)
