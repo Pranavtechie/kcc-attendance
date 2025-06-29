@@ -7,7 +7,11 @@ import cv2
 import numpy as np
 import onnxruntime as ort
 
+from . import config
 from .utils import nms
+
+if config.USE_RKNN:
+    from rknnlite.api import RKNNLite
 
 
 class Face:
@@ -30,21 +34,35 @@ class SCRFDDetector:
     """
 
     def __init__(self, model_path: str | Path, conf_threshold: float = 0.5):
-        self.model_path = str(model_path)
         self.conf_threshold = conf_threshold
-        providers = (
-            ["CoreMLExecutionProvider", "CPUExecutionProvider"]
-            if "CoreMLExecutionProvider" in ort.get_available_providers()
-            else ["CPUExecutionProvider"]
-        )
-        self.session = ort.InferenceSession(
-            self.model_path,
-            providers=providers,
-        )
-        self.input_name = self.session.get_inputs()[0].name
-        self.output_names = [o.name for o in self.session.get_outputs()]
-        # Assume three strides
-        self.strides = (8, 16, 32)
+        self.use_rknn = config.USE_RKNN
+
+        if self.use_rknn:
+            rknn_model_path = config.DETECTOR_RKNN_MODEL_PATH
+            self.rknn = RKNNLite(verbose=False)
+            ret = self.rknn.load_rknn(rknn_model_path)
+            if ret != 0:
+                raise RuntimeError(f"Failed to load RKNN model: {rknn_model_path}")
+            # NPU_CORE_0_1_2 is for RK3588
+            ret = self.rknn.init_runtime(core_mask=RKNNLite.NPU_CORE_0_1_2)
+            if ret != 0:
+                raise RuntimeError("Failed to init RKNN runtime")
+            self.strides = (8, 16, 32)
+        else:
+            self.model_path = str(model_path)
+            providers = (
+                ["CoreMLExecutionProvider", "CPUExecutionProvider"]
+                if "CoreMLExecutionProvider" in ort.get_available_providers()
+                else ["CPUExecutionProvider"]
+            )
+            self.session = ort.InferenceSession(
+                self.model_path,
+                providers=providers,
+            )
+            self.input_name = self.session.get_inputs()[0].name
+            self.output_names = [o.name for o in self.session.get_outputs()]
+            # Assume three strides
+            self.strides = (8, 16, 32)
 
     @staticmethod
     def _preprocess(img: np.ndarray) -> np.ndarray:
@@ -62,8 +80,20 @@ class SCRFDDetector:
         return img
 
     def __call__(self, img_bgr: np.ndarray) -> List[Face]:
-        blob = self._preprocess(img_bgr)
-        outs = self.session.run(self.output_names, {self.input_name: blob})
+        if self.use_rknn:
+            # For RKNN, preprocessing is typically simpler (e.g., uint8 NHWC)
+            h0, w0 = img_bgr.shape[:2]
+            size = max(h0, w0)
+            padded = np.zeros((size, size, 3), dtype=np.uint8)
+            padded[:h0, :w0] = img_bgr
+            rknn_input = cv2.cvtColor(padded, cv2.COLOR_BGR2RGB)
+            # Post-processing logic still relies on the original blob, so we create it.
+            blob = self._preprocess(img_bgr)
+            # RKNN inference needs a batch dimension.
+            outs = self.rknn.inference(inputs=[rknn_input], data_format="nhwc")
+        else:
+            blob = self._preprocess(img_bgr)
+            outs = self.session.run(self.output_names, {self.input_name: blob})
         # unpack outputs
         scores_list = outs[0:3]
         bboxes_list = outs[3:6]

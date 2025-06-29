@@ -24,6 +24,19 @@ DB_PATH = str(DATA_DIR / "faces.db")
 EMBEDDINGS_PATH = str(DATA_DIR / "embeddings.npy")
 DB_SEARCH_THRESHOLD = 0.35
 
+# --- RKNN models -----------------------------------------------------------
+DETECTOR_RKNN_MODEL_PATH = str(MODELS_DIR / "rknn-weights" / "scrfd_2.5g.rknn")
+RECOGNIZER_RKNN_MODEL_PATH = str(MODELS_DIR / "rknn-weights" / "w600k_r50.rknn")
+
+# --- Inference Engine Selection --------------------------------------------
+try:
+    # rknnlite is the library for on-device inference
+    from rknnlite.api import RKNNLite  # noqa: F401
+
+    USE_RKNN = True
+except (ImportError, ModuleNotFoundError):
+    USE_RKNN = False
+
 # --- GUI Application (PySide6) ---------------------------------------------
 APP_ENROL_FRAMES = 20
 APP_FRAME_WIDTH = 640
