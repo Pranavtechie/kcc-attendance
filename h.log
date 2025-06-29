@@ -1,0 +1,14 @@
+W Query dynamic range failed. Ret code: RKNN_ERR_MODEL_INVALID. (If it is a static shape RKNN model, please ignore the above warning message.)
+W Query dynamic range failed. Ret code: RKNN_ERR_MODEL_INVALID. (If it is a static shape RKNN model, please ignore the above warning message.)
+Fatal Python error: none_dealloc: deallocating None: bug likely caused by a refcount error in a C extension
+Python runtime state: initialized
+
+Current thread 0x0000007fa1761020 (most recent call first):
+  File "/home/vicharak/kcc-attendance/src/app.py", line 148 in _process_frame
+  File "/home/vicharak/kcc-attendance/src/app.py", line 209 in main
+  File "/home/vicharak/kcc-attendance/src/app.py", line 213 in <module>
+  File "<frozen runpy>", line 88 in _run_code
+  File "<frozen runpy>", line 198 in _run_module_as_main
+
+Extension modules: numpy._core._multiarray_umath, numpy.linalg._umath_linalg, rknnlite.api.rknn_utils, rknnlite.api.rknn_log, rknnlite.api.rknn_model, rknnlite.utils.yaml_parser, rknnlite.api.npu_config.cpu_npu_mapper, rknnlite.api.rknn_platform_utils, psutil._psutil_linux, psutil._psutil_posix, rknnlite.api.rknn_runtime, shiboken6.Shiboken, PySide6.QtCore, PySide6.QtGui, PySide6.QtWidgets, faiss._swigfaiss (total: 16)
+Found available camera at index 1
