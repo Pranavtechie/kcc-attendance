@@ -35,7 +35,7 @@ inspireface-python-examles/**
 rknn-toolkit2-v2.3.2-2025-04-09/**
 
 # DATA
-enrolled_faces/**
+data/enrolled_faces/**
 attendance-people-data.json
 embeddings.npy
 *.db
