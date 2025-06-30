@@ -12,6 +12,7 @@ dependencies = [
     "PySide6>=6.7.0",
     "uuid-extension>=0.1.0",
     "peewee>=3.18.1",
+    "tqdm>=4.67.1",
 ]
 
 [tool.ruff]

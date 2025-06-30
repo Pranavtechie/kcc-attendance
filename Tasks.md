@@ -6,10 +6,11 @@
 
 ## Final Checklist
 
-- [ ] Convert `.onnx` model weights to `.rknn`
-- [ ] Setup proper code for inference from `.rknn` model weights, when rockchip compatible system is detected
-- [ ] Command for NPU Usage => `watch sudo cat /sys/kernel/debug/rknpu/load`
-- [ ] Telemetry and tracking of NPU / GPU usage, using prometheus etc ???
+- [x] Convert `.onnx` model weights to `.rknn`
+- [x] Setup proper code for inference from `.rknn` model weights, when rockchip compatible system is detected
+- [ ] Command for NPU Usage => `watch sudo cat /sys/kernel/debug/rknpu/load`, find way to store the timestamp and the usage properly using prometheus
+- [ ] Telemetry and tracking of NPU / GPU usage, CPU using prometheus etc ???
+- [ ] Hibernation Mode => if camera black -> enter hibernation mode / check every 5 sec (capturing new frame)
 
 ## Whimsical / Unimportant
 

@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 import cv2
@@ -23,6 +24,7 @@ class ArcFaceRecognizer:
         self.use_rknn = config.USE_RKNN
 
         if self.use_rknn:
+            logging.info("Using RKNN for face recognition.")
             rknn_model_path = config.RECOGNIZER_RKNN_MODEL_PATH
             self.rknn = RKNNLite(verbose=False)
             ret = self.rknn.load_rknn(rknn_model_path)
@@ -33,6 +35,7 @@ class ArcFaceRecognizer:
             if ret != 0:
                 raise RuntimeError("Failed to init RKNN runtime")
         else:
+            logging.info("Using ONNX for face recognition.")
             providers = (
                 ["CoreMLExecutionProvider", "CPUExecutionProvider"]
                 if "CoreMLExecutionProvider" in ort.get_available_providers()

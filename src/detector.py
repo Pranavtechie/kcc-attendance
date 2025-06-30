@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 from typing import List
 
@@ -38,6 +39,7 @@ class SCRFDDetector:
         self.use_rknn = config.USE_RKNN
 
         if self.use_rknn:
+            logging.info("Using RKNN for face detection.")
             rknn_model_path = config.DETECTOR_RKNN_MODEL_PATH
             self.rknn = RKNNLite(verbose=False)
             ret = self.rknn.load_rknn(rknn_model_path)
@@ -49,6 +51,7 @@ class SCRFDDetector:
                 raise RuntimeError("Failed to init RKNN runtime")
             self.strides = (8, 16, 32)
         else:
+            logging.info("Using ONNX for face detection.")
             self.model_path = str(model_path)
             providers = (
                 ["CoreMLExecutionProvider", "CPUExecutionProvider"]

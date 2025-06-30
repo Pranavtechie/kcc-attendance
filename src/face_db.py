@@ -15,7 +15,6 @@ from typing import Optional
 
 import faiss  # type: ignore
 import numpy as np
-from uuid_extension import uuid7
 
 from . import config
 from .schema import Person, db
@@ -70,17 +69,27 @@ class FaceDatabase:
     # Public API
     # ---------------------------------------------------------------------
 
-    def add_person(self, embedding: np.ndarray, name: str, person_type: str) -> str:
+    def add_person(
+        self,
+        embedding: np.ndarray,
+        person_id: str,
+        name: str,
+        person_type: str,
+        admission_number: str | None = None,
+        room_id: str | None = None,
+        picture_filename: str | None = None,
+    ) -> str:
         """Add a *single* embedding → returns generated UUID."""
         emb = self._prepare_vec(embedding)
-        uuid_str = str(uuid7())
 
         # Persist - SQLite first so we fail atomically before mutating others
         Person.create(
-            uniqueId=uuid_str,
+            uniqueId=person_id,
             name=name,
             personType=person_type,
-            pictureFileName="placeholder.jpg",
+            admissionNumber=admission_number,
+            roomId=room_id,
+            pictureFileName=picture_filename or "placeholder.jpg",
         )
 
         # Persist - embeddings (append-save to disk)
@@ -89,29 +98,30 @@ class FaceDatabase:
         # Update FAISS in-memory index
         self._index.add(emb[np.newaxis, :])
 
-        return uuid_str
+        return person_id
 
     def search(
         self, embedding: np.ndarray, threshold: float = config.DB_SEARCH_THRESHOLD
-    ) -> Optional[str]:
-        """Return the *name* that best matches the given embedding or ``None``.
+    ) -> Optional[tuple[str, float]]:
+        """Return the *name* and *similarity* that best matches the given
+        embedding or ``None``.
 
         ``threshold`` is applied to the cosine similarity (1.0 == perfect
         match). 0.35 is a conservative default - tweak to your needs.
         """
         if self._index.ntotal == 0:
-            return None
+            return None, 0.0
 
         vec = self._prepare_vec(embedding)
         sims, idxs = self._index.search(vec[np.newaxis, :], 1)
         sim = float(sims[0, 0])
         best_idx = int(idxs[0, 0])
         if best_idx == -1 or sim < threshold:
-            return None
+            return None, sim
 
         # Fetch the name corresponding to *rowid* = best_idx + 1
         person = Person.select(Person.name).order_by(Person.uniqueId).offset(best_idx).scalar()
-        return person
+        return person, sim
 
     # ------------------------------------------------------------------
     # Helper utils

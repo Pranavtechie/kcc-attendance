@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import sys
 from typing import List
 
@@ -106,7 +107,7 @@ class MainWindow(QMainWindow):
                 self.timer.setInterval(config.APP_HIBERNATE_INTERVAL_MS)
                 self._hibernating = True
                 self.info_label.setText("No camera signal. Hibernating...")
-                self.video_label.clear() # Clear the video label
+                self.video_label.clear()  # Clear the video label
             return
 
         frame_brightness = np.mean(frame)
@@ -116,8 +117,8 @@ class MainWindow(QMainWindow):
             self._hibernating = True
             self.timer.setInterval(config.APP_HIBERNATE_INTERVAL_MS)
             self.info_label.setText("Camera blocked. Hibernating...")
-            self.video_label.clear() # Clear the video label
-            return # Stop processing this frame
+            self.video_label.clear()  # Clear the video label
+            return  # Stop processing this frame
 
         # Condition to WAKE UP from hibernation
         if self._hibernating and frame_brightness >= config.APP_BLACK_FRAME_THRESHOLD:
@@ -126,7 +127,7 @@ class MainWindow(QMainWindow):
             self.info_label.setText("Camera active.")
             # We return here and let the next, normally-timed frame do the work
             return
-            
+
         # If already hibernating, do nothing else
         if self._hibernating:
             return
@@ -152,15 +153,27 @@ class MainWindow(QMainWindow):
                     name_to_show = f"Enrolled {self._current_enrol_name}!"
             else:
                 # Recognition
-                match_name = self.db.search(feat)
+                match_name, similarity = self.db.search(feat)
                 if match_name is not None:
                     name_to_show = f"Hello, {match_name}!"
+                    # Name
                     cv2.putText(
                         frame,
                         match_name,
                         (x1, y1 - 10),
                         cv2.FONT_HERSHEY_SIMPLEX,
                         0.9,
+                        (0, 255, 0),
+                        2,
+                        cv2.LINE_AA,
+                    )
+                    # Similarity
+                    cv2.putText(
+                        frame,
+                        f"{similarity:.2%}",
+                        (x1, y2 + 20),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.6,
                         (0, 255, 0),
                         2,
                         cv2.LINE_AA,
@@ -230,6 +243,7 @@ class EnrolDialog(QDialog):
 
 
 def main() -> None:  # pragma: no cover
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
     app = QApplication(sys.argv)
     cam_index = find_available_camera()
     win = MainWindow(cam_index=cam_index)
